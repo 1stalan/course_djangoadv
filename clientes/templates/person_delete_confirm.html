@@ -5,14 +5,16 @@
 
 {% block main %}
 
-    <h1>Tem certeza que deseja deletar {{ person.first_name }} </h1>
+<h1>Tem certeza que deseja deletar {{ person.first_name }} </h1>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Delete</button>
-    </form>
-
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
 
 
 {% endblock %}
 
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock%}
