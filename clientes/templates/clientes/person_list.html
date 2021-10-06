@@ -1,0 +1,11 @@
+listagem de pessoas
+
+{% for obj in object_list %}
+
+<p><a href="{% url 'person_detail' obj.pk %}"> {{ obj }}</a></p>
+
+
+{% endfor %}
+
+<p><a href="{% url 'person_create' %}">Novo</a></p>
+
