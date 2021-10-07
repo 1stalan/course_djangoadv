@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.views import View
 from .models import Person
+from .models import Produto
 from .forms import PersonForm
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -9,6 +11,7 @@ from django.views.generic import UpdateView
 from django.views.generic import DeleteView
 from django.urls import reverse_lazy
 from django.utils import timezone
+
 
 @login_required
 def persons_list(request):
@@ -49,10 +52,10 @@ def persons_delete(request, id):
     return render(request, 'person_delete_confirm.html', {'person': person})
 
 
-
 class PersonList(ListView):
     model = Person
     template_name = 'person_list.html'
+
 
 class PersonDetail(DetailView):
     model = Person
@@ -68,11 +71,24 @@ class PersonCreate(CreateView):
     fields = ['first_name', 'last_name', 'age', 'salary', 'bio', 'photo']
     success_url = '/clientes/person_list'
 
+
 class PersonUpdate(UpdateView):
     model = Person
     fields = ['first_name', 'last_name', 'age', 'salary', 'bio', 'photo']
     success_url = reverse_lazy('person_list')
 
+
 class PersonDelete(DeleteView):
     model = Person
     success_url = reverse_lazy('person_list')
+
+
+class ProdutoBulk(View):
+    def get(self, request):
+        produtos = ['banana', 'maca', 'laranja', 'limao', 'melancia']
+        list_produto = []
+        for produto in produtos:
+            p = Produto(descricao=produto, preco=10)
+            list_produto.append(p)
+        Produto.objects.bulk_create(list_produto)
+        return HttpResponse('funcionou')
