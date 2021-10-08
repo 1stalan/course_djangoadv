@@ -9,4 +9,6 @@ def current_time(format_string):
 
 @register.simple_tag
 def footer_message():
-    return 'Desenvolvimento Web com Django'
+    import django
+    return 'Desenvolvimento Web com Django ' + str(django.get_version()
+)

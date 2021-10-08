@@ -15,3 +15,6 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+admin.site.site_header = 'Gestão de clientes'
+admin.site.index_title = 'Administração'
+admin.site.site_title = 'Bem-Vindo a Gestão de clientes'
