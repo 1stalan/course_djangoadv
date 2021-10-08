@@ -39,3 +39,10 @@ class Venda(models.Model):
 
     def __str__(self):
         return self.numero
+    def get_full_price(self):
+        tot = 0
+        for produto in self.produtos.all():
+            tot += produto.preco
+        return (tot - self.desconto) - self.impostos
+
+
