@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Person, Documento, Venda
-from .models import ItensDoPedido
+from .models import Person, Documento
 
 admin.site.enable_nav_sidebar = False
 
@@ -32,17 +31,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     search_fields = ['num_doc']
 
 
-class VendaAdmin(admin.ModelAdmin):
-    model = Venda
-    list_display = ('id', 'pessoa')
-    list_filter = ('pessoa__doc',)
-    search_fields = ('id', 'pessoa__first_name', 'pessoa__doc__num_doc',)
-    readonly_fields = ('valor',)
-    autocomplete_fields = ['pessoa']
-
 
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Documento, DocumentoAdmin)
-admin.site.register(Venda, VendaAdmin)
-admin.site.register(ItensDoPedido)

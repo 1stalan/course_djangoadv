@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views import View
 from .models import Person
-from .models import Produto
 from .forms import PersonForm
 from django.views.generic import ListView
 from django.views.generic import DetailView
@@ -83,12 +81,3 @@ class PersonDelete(DeleteView):
     success_url = reverse_lazy('person_list')
 
 
-class ProdutoBulk(View):
-    def get(self, request):
-        produtos = ['banana', 'maca', 'laranja', 'limao', 'melancia']
-        list_produto = []
-        for produto in produtos:
-            p = Produto(descricao=produto, preco=10)
-            list_produto.append(p)
-        Produto.objects.bulk_create(list_produto)
-        return HttpResponse('funcionou')
