@@ -1,8 +1,9 @@
 from django.db import models
 from clientes.models import Person
+from django.db.models import Sum, F, FloatField, Max
 from produtos.models import Produto
 from django.dispatch import receiver
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import post_save
 
 
 # Create your models here.
@@ -18,15 +19,19 @@ class Venda(models.Model):
         return self.numero
 
     def get_total(self):
-        tot = 0
-        for produto in self.produtos.all():
-            tot += produto.preco
-        return (tot - self.desconto) - self.impostos
+        tot = self.itemdopedido_set.all().aggregate(
+            tot_ped=Sum(F('quantidade') * (F('produto__preco') - F('desconto')),output_field=FloatField())
+        )['tot_ped'] or 0
+
+        tot = tot - float(self.impostos) - float(self.desconto)
+        self.valor = tot
+        Venda.objects.filter(id=self.id).update(valor=tot)
+
 
 
 class ItemDoPedido(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE)
-    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    produto = models.ForeignKey(Produto, on_delete=models.PROTECT)
     quantidade = models.FloatField()
     desconto = models.DecimalField(max_digits=5, decimal_places=2)
 
@@ -34,7 +39,11 @@ class ItemDoPedido(models.Model):
         return self.venda.numero + '-' + self.produto.descricao
 
 
-#@receiver(m2m_changed, sender=Venda.produtos.through)
+@receiver(post_save, sender=ItemDoPedido)
 def update_venda_total(sender, instance, **kwargs):
-    instance.valor = instance.get_total()
-    instance.save()
+    instance.venda.get_total()
+
+@receiver(post_save, sender=Venda)
+def update_venda_total(sender, instance, **kwargs):
+    instance.get_total()
+

@@ -6,11 +6,12 @@ from .actions import nfe_emitida, nfe_nao_emitida
 class ItemDoPedidoInline(admin.TabularInline):
     model = ItemDoPedido
 
-
 # Register your models here.
 class VendaAdmin(admin.ModelAdmin):
     model = Venda
-    list_display = ('id', 'pessoa', 'nfe_emitida')
+
+    list_display = ('numero', 'pessoa', 'nfe_emitida')
+    list_display_links = ('pessoa',)
     list_filter = ('pessoa__doc',)
     search_fields = ('id', 'pessoa__first_name', 'pessoa__doc__num_doc',)
     readonly_fields = ('valor',)
