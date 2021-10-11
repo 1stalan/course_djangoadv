@@ -4,6 +4,7 @@ from django.db.models import Sum, F, FloatField, Max
 from produtos.models import Produto
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from .managers import VendaManager
 
 
 # Create your models here.
@@ -14,6 +15,8 @@ class Venda(models.Model):
     impostos = models.DecimalField(max_digits=5, decimal_places=2)
     pessoa = models.ForeignKey(Person, null=True, blank=True, on_delete=models.PROTECT)
     nfe_emitida = models.BooleanField(default=False)
+
+    objects = VendaManager()
 
     def __str__(self):
         return self.numero
