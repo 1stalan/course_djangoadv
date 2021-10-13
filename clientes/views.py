@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Person
 from .forms import PersonForm
 from django.views.generic import ListView
@@ -50,13 +51,18 @@ def persons_delete(request, id):
     return render(request, 'person_delete_confirm.html', {'person': person})
 
 
-class PersonList(ListView):
+class PersonList(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Person
     template_name = 'person_list.html'
 
+    # Verifica se o usuario tem permissão de ver a lista de clientes
+    permission_required = ('clientes.view_person',)
 
-class PersonDetail(DetailView):
+
+class PersonDetail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Person
+    # Verifica se o usuario tem permissão de ver a lista de clientes
+    permission_required = ('clientes.view_person',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,20 +70,23 @@ class PersonDetail(DetailView):
         return context
 
 
-class PersonCreate(CreateView):
+class PersonCreate(LoginRequiredMixin, CreateView):
     model = Person
     fields = ['first_name', 'last_name', 'age', 'salary', 'bio', 'photo']
     success_url = '/clientes/person_list'
 
 
-class PersonUpdate(UpdateView):
+class PersonUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Person
     fields = ['first_name', 'last_name', 'age', 'salary', 'bio', 'photo']
     success_url = reverse_lazy('person_list')
 
+    # Verifica se o usuario tem permissão de ver a alterar os dados do clientes
+    permission_required = ('clientes.change_person',)
 
-class PersonDelete(DeleteView):
+
+class PersonDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Person
     success_url = reverse_lazy('person_list')
-
-
+    # Verifica se o usuario tem permissão de deletar um cliente do banco
+    permission_required = ('clientes.deletar_clientes',)

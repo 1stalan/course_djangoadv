@@ -8,14 +8,16 @@ from django.views.generic import CreateView
 from django.views.generic import UpdateView
 from django.views.generic import DeleteView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from .models import Produto
 
-class ProdutoHome(ListView):
+class ProdutoHome(LoginRequiredMixin, ListView):
     model = Produto
     template_name = 'produtos/produtos_home.html'
 
-class ProdutoDetail(DetailView):
+class ProdutoDetail(LoginRequiredMixin, DetailView):
     model = Produto
 
     def get_context_data(self, **kwargs):
@@ -23,23 +25,23 @@ class ProdutoDetail(DetailView):
         context['now'] = timezone.now()
         return context
 
-class ProdutoCreate(CreateView):
+class ProdutoCreate(LoginRequiredMixin, CreateView):
     model = Produto
     fields = ['descricao','preco']
     success_url = reverse_lazy('produtos')
 
-class ProdutoUpdate(UpdateView):
+class ProdutoUpdate(LoginRequiredMixin, UpdateView):
     model = Produto
     fields = ['descricao', 'preco']
     success_url = reverse_lazy('produtos')
 
 
-class ProdutoDelete(DeleteView):
+class ProdutoDelete(LoginRequiredMixin, DeleteView):
     model = Produto
 
     success_url = reverse_lazy('produtos')
 
-class ProdutoBulk(View):
+class ProdutoBulk(LoginRequiredMixin, View):
     def get(self, request):
         produtos = ['banana', 'maca', 'laranja', 'limao', 'melancia']
         list_produto = []
