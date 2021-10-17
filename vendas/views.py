@@ -1,9 +1,10 @@
 from django.shortcuts import render, HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import View
 from .models import Venda
 
 
-class DashbordView(View):
+class DashbordView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         """Verifica se o usuario tem permissão para ver a dashboard"""
         if not request.user.has_perm('ver_dashboard'):
@@ -19,7 +20,5 @@ class DashbordView(View):
         data['max'] = Venda.objects.max()
         data['n_ped'] = Venda.objects.n_ped()
         data['n_ped_nfe'] = Venda.objects.n_ped_nfe()
-
-        print(data)
 
         return render(request, 'vendas/dashboard.html', data)

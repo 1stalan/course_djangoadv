@@ -1,6 +1,47 @@
-{{ object }}<br>
-{{ now }}
+{% extends 'base.html' %}
+{% load bootstrap %}
 
+{% block title %} Administracao {% endblock %}
 
-<p><a href="{% url 'person_update' object.pk %}">Update</a>
-<a href="{% url 'person_delete' object.pk %}">Deletar</a></p>
+{% block main %}
+
+<div class="row">
+    <div class="col">
+
+    </div>
+
+    <div class="col-6">
+        <h3>Detalhes</h3>
+        <ul class="list-group">
+            <li class="list-group-item">
+                Nome: {{ person|title }}
+            </li>
+            <li class="list-group-item">
+                Idade: {{ person.age|title }}
+            </li>
+            <li class="list-group-item">
+                Bio: {{ person.bio|title }}
+            </li>
+        </ul>
+
+        <br>
+
+        <a href="{% url 'person_update' person.pk %}" class="btn btn-primary">Editar</a>
+        <a href="{% url 'person_delete' person.pk %}" class="btn btn-primary">Deletar</a>
+
+    </div>
+
+    <div class="col">
+        {% if user.is_authenticated %}
+        <p>Ola {{user.username }}
+            <a href="{% url 'logout' %}">
+                <span class="badge badge-dark">Sair</span>
+            </a>
+        </p>
+
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

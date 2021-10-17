@@ -1,5 +1,15 @@
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block title %} Administracao {% endblock %}
+
+{% block main %}
+    <h3>Novo cliente</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+{% endblock %}
+
+
